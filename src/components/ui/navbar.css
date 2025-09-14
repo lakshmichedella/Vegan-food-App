@@ -1,0 +1,16 @@
+nav {
+    display: flex;
+    background-color: rgb(233, 233, 233);
+    height: 50px;
+    font-weight: bold;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-link {
+    display: flex;
+    color: black;
+    align-items: center;
+    justify-content: center;
+}
