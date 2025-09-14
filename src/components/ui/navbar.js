@@ -4,10 +4,10 @@ export default function navbar(){
     return (
         <nav>
             <div className="navbar-title nav-link">
-                vegan food app
+                Vegan Food App
             </div>
             <div className="nav-link">
-                Link
+                
             </div>
         </nav>
     );
