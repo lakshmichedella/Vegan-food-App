@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import RestaurantCard from "../components/ui/RestaurantCard";
+import Link from 'next/link';
 
 const dummyData = [
   { id: 1, name: "Fantastic Wok", status: "Closes in 2 hours", cuisine: "Chinese", rating: 3, imageUrl: "https://images.unsplash.com/photo-1555126634-323283e090fa?w=200" },
@@ -63,9 +64,11 @@ export default function Home() {
                     <RestaurantCard key={res.id} {...res} />
                   ))}
                 </div>
-                <button className="mt-8 bg-[#D9D9D9] w-full py-4 rounded-full shadow-md hover:bg-gray-300 transition uppercase text-sm tracking-widest">
-                  More Results
-                </button>
+                    <Link href="/all-results" className="w-full">
+                      <button className="mt-8 bg-[#E0E0E0] w-[80%] py-6 rounded-[30px] shadow-md hover:bg-gray-200 transition uppercase text-[10px] font-bold tracking-widest text-gray-600 mx-auto block">
+                        More Results
+                      </button>
+                    </Link>   
               </div>
             )}
           </div>
