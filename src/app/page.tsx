@@ -1,72 +1,76 @@
-import Image from "next/image";
-import {Navbar} from "../components/ui/navbar";
+"use client";
+import { useState } from "react";
+import RestaurantCard from "../components/ui/RestaurantCard";
 
-function Map() {
-  return (
-    <div style={{ width: "100%", height: "100%" }}>
-      <iframe
-        src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d39448.509951781474!2d-80.52416504530215!3d43.46217509205705!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sca!4v1757886417107!5m2!1sen!2sca"
-        width="100%"
-        height="100%"
-        style={{ border: 0 }}
-        allowFullScreen
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
-        title="Google Map"
-      ></iframe>
-    </div>
-  );
-}
+const dummyData = [
+  { id: 1, name: "Fantastic Wok", status: "Closes in 2 hours", cuisine: "Chinese", rating: 3, imageUrl: "https://images.unsplash.com/photo-1555126634-323283e090fa?w=200" },
+  { id: 2, name: "India Gate", status: "Closes in 4 hours", cuisine: "Indian", rating: 4, imageUrl: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=200" },
+  { id: 3, name: "Sushi Island", status: "Closes in 1 hour", cuisine: "Japanese", rating: 4, imageUrl: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=200" },
+];
 
-function App() {
+export default function Home() {
+  const [submitted, setSubmitted] = useState(false);
+
   return (
-    <div className="App">
-        <Navbar/>
-      <div className="flex" style={{height: "calc(100vh - 60px)" }}>
-        <div className="flex-3">
-          <Map />
+    <main className="min-h-screen bg-[#EDEDED] p-12 font-sans flex flex-col items-center">
+      <div className="w-full max-w-6xl">
+        <h1 className="text-7xl font-light tracking-[0.1em] mb-12 text-black uppercase">
+          Vegan Food App
+        </h1>
+        
+        <div className="flex flex-col lg:flex-row gap-12 items-start">
+          <div className="flex-1 w-full">
+            <div className="bg-[#D9D9D9] rounded-[40px] overflow-hidden shadow-sm mb-10 border-4 border-white">
+              <img 
+                src="https://i.stack.imgur.com/HILmr.png" 
+                alt="Map" 
+                className="w-full h-[400px] object-cover"
+              />
+            </div>
+            
+            <div className="flex flex-col items-center w-full">
+              <h2 className="uppercase text-xl tracking-tight mb-6 font-normal">
+                Choose your requirements:
+              </h2>
+              <div className="grid grid-cols-2 gap-x-16 gap-y-1 text-lg">
+                {["Gluten Free", "Lactose free", "Vegetarian", "Kosher", "Vegan", "Halal"].map((req) => (
+                  <label key={req} className="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" className="w-5 h-5 border-black rounded-none" /> {req}
+                  </label>
+                ))}
+              </div>
+              <button 
+                onClick={() => setSubmitted(true)}
+                className="mt-10 bg-[#D9D9D9] px-16 py-2 rounded-[15px] shadow-sm hover:bg-gray-400 transition uppercase text-xl"
+              >
+                {submitted ? "New Search" : "Submit"}
+              </button>
+            </div>
+          </div>
+
+          <div className="w-full lg:w-[450px] bg-[#D1D1D1] rounded-[60px] p-8 min-h-[600px] flex flex-col items-center">
+            {!submitted ? (
+              <div className="flex flex-col justify-center items-center h-full text-center">
+                <p className="text-xl leading-relaxed text-[#555] uppercase max-w-[250px]">
+                  Choose your requirements and press submit to see suitable restaurants ...
+                </p>
+              </div>
+            ) : (
+              <div className="w-full">
+                <p className="text-right text-[10px] uppercase mb-4 tracking-widest text-gray-600">Here's what we found:</p>
+                <div className="space-y-4">
+                  {dummyData.map((res) => (
+                    <RestaurantCard key={res.id} {...res} />
+                  ))}
+                </div>
+                <button className="mt-8 bg-[#D9D9D9] w-full py-4 rounded-full shadow-md hover:bg-gray-300 transition uppercase text-sm tracking-widest">
+                  More Results
+                </button>
+              </div>
+            )}
+          </div>
         </div>
-
-        <div className="flex-1 bg-inherit p-2">
-          <h2>Explore</h2>
-          <p>Dietary Options:</p>
-
-          <input type="radio" value="vegetarian" />
-          <label htmlFor="vegetarian">Vegetarian</label><br />
-          <input type="radio" value="vegan" />
-          <label htmlFor="vegan">Vegan</label><br />
-          <input type="radio" value="halal" />
-          <label htmlFor="halal">Halal</label><br /> 
-          <input type="radio" value="kosher" />
-          <label htmlFor="kosher">Kosher</label><br />  
-          <input type="radio" value="gluten-free" />
-          <label htmlFor="gluten-free">Gluten Free</label><br /> 
-
-
-          <p>Restaurant Options:</p>
-          <input type="radio" value="easia" />
-          <label htmlFor="easia">East Asian</label><br />
-          <input type="radio" value="sasia" />
-          <label htmlFor="sasia">South Asia</label><br />
-          <input type="radio" value="fast-food" />
-          <label htmlFor="fast-food">Fast Food</label><br /> 
-          <input type="radio" value="cafe" />
-          <label htmlFor="cafe">Cafe</label><br />  
-          <input type="radio" value="bakery" />
-          <label htmlFor="bakery">Bakery/Ice Cream</label><br /> 
-
-
-
-
-
-
-          <button className="px-[1rem] py-[0.5rem] mt-[1rem] border-solid border-2 border-neutral-500">Find restaurants!</button>
-
-
-           </div>
       </div>
-    </div>
+    </main>
   );
 }
-
-export default App;
