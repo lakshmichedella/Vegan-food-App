@@ -2,6 +2,7 @@
 import { useState } from "react";
 import RestaurantCard from "../components/ui/RestaurantCard";
 import Link from 'next/link';
+import {GMap} from "../components/ui/Map"
 
 const dummyData = [
   { id: 1, name: "Fantastic Wok", status: "Closes in 2 hours", cuisine: "Chinese", rating: 3, imageUrl: "https://images.unsplash.com/photo-1555126634-323283e090fa?w=200" },
@@ -11,6 +12,18 @@ const dummyData = [
 
 export default function Home() {
   const [submitted, setSubmitted] = useState(false);
+  const [mapData, setMapData] = useState({location: "Toronto", cuisine: "", diet: "vegan"});
+  const [dietOptions, setDietOptions] = useState([
+    {diet: "Gluten Free", checked: false},
+    {diet: "Lactose free", checked: false}, 
+    {diet: "Vegetarian", checked: false}, 
+    {diet: "Kosher", checked: false}, 
+    {diet: "Vegan", checked: false}, 
+    {diet: "Halal", checked: false}
+    ])
+    const [placesData, setPlacesData] = useState(dummyData)
+
+    console.log("Place data", placesData)
 
   return (
     <main className="min-h-screen bg-[#EDEDED] p-12 font-sans flex flex-col items-center">
@@ -21,12 +34,8 @@ export default function Home() {
         
         <div className="flex flex-col lg:flex-row gap-12 items-start">
           <div className="flex-1 w-full">
-            <div className="bg-[#D9D9D9] rounded-[40px] overflow-hidden shadow-sm mb-10 border-4 border-white">
-              <img 
-                src="https://i.stack.imgur.com/HILmr.png" 
-                alt="Map" 
-                className="w-full h-[400px] object-cover"
-              />
+            <div className="bg-[#D9D9D9] h-[500px] rounded-[40px] overflow-hidden shadow-sm mb-10 border-4 border-white">
+              <GMap location={mapData.location} cuisine={mapData.cuisine} diet={mapData.diet} updatePlacesData={setPlacesData} />
             </div>
             
             <div className="flex flex-col items-center w-full">
@@ -34,14 +43,15 @@ export default function Home() {
                 Choose your requirements:
               </h2>
               <div className="grid grid-cols-2 gap-x-16 gap-y-1 text-lg">
-                {["Gluten Free", "Lactose free", "Vegetarian", "Kosher", "Vegan", "Halal"].map((req) => (
-                  <label key={req} className="flex items-center gap-3 cursor-pointer">
-                    <input type="checkbox" className="w-5 h-5 border-black rounded-none" /> {req}
+                {dietOptions.map(({diet, checked}, index) => (
+                  <label key={diet} className="flex items-center gap-3 cursor-pointer text-neutral-950">
+                    <input type="checkbox" className="w-5 h-5 border-black rounded-none" defaultChecked={checked} onChange={(ev) => {dietOptions[index]["checked"] = !checked; setDietOptions(dietOptions);}}/> 
+                    {diet}
                   </label>
                 ))}
               </div>
               <button 
-                onClick={() => setSubmitted(true)}
+                onClick={() => {setSubmitted(true); setMapData({location: "Waterloo", cuisine: "", diet: dietOptions.filter(({checked}) => checked === true).map(({diet}) => diet).join(" or ") })}}
                 className="mt-10 bg-[#D9D9D9] px-16 py-2 rounded-[15px] shadow-sm hover:bg-gray-400 transition uppercase text-xl"
               >
                 {submitted ? "New Search" : "Submit"}
@@ -60,7 +70,7 @@ export default function Home() {
               <div className="w-full">
                 <p className="text-right text-[10px] uppercase mb-4 tracking-widest text-gray-600">Here's what we found:</p>
                 <div className="space-y-4">
-                  {dummyData.map((res) => (
+                  {placesData.map((res) => (
                     <RestaurantCard key={res.id} {...res} />
                   ))}
                 </div>
