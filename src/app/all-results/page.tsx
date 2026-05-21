@@ -1,16 +1,28 @@
 "use client";
 import Link from 'next/link';
 import RestaurantCard from "../../components/ui/RestaurantCard";
+import { useEffect, useState } from 'react';
 
-const allRestaurantsData = Array(9).fill({
-  name: "Fantastic Wok",
-  status: "Closes in 2 hours",
-  cuisine: "Chinese",
-  rating: 3,
-  imageUrl: "https://images.unsplash.com/photo-1555126634-323283e090fa?w=200"
-});
+
+const allRestaurantsData = Array.from({ length: 9 }, () => (
+    { 
+        id: 1, 
+        displayName: "Fantastic Wok", 
+        regularOpeningHours: {"weekdayDescriptions": "Closes in 2 hours"}, 
+        rating: 3, 
+        photos:[ {googleMapsURI: "https://images.unsplash.com/photo-1555126634-323283e090fa?w=200"}] 
+    })
+);
 
 export default function AllResults() {
+    const [resturaunts, setResteraunts] = useState(allRestaurantsData)
+
+    useEffect(() => {
+        const placeData = sessionStorage.getItem("placeData");
+        setResteraunts(JSON.parse( placeData ? placeData : JSON.stringify(allRestaurantsData)));
+    }, [])
+    console.log(resturaunts);
+
   return (
     <main className="min-h-screen bg-[#EDEDED] p-16 flex flex-col items-center">
       <div className="w-full max-w-6xl">
@@ -23,9 +35,9 @@ export default function AllResults() {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
-          {allRestaurantsData.map((res, index) => (
+          {resturaunts.map((res, index) => (
             <div key={index} className="w-full max-w-[320px]">
-              <RestaurantCard {...res} />
+                <RestaurantCard name={res.displayName} status={res.regularOpeningHours.weekdayDescriptions} rating={res.rating} imageUrl={res.photos[0].googleMapsURI} />
             </div>
           ))}
         </div>

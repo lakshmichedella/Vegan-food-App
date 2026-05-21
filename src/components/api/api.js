@@ -4,13 +4,13 @@ export async function API(location, cuisine, diet) {
   
     const request = {
         textQuery: `${diet} restaurants in ${location}`,
-        fields: ['displayName', 'location', 'formattedAddress', 'googleMapsURI',],
+        fields: ['displayName', 'location', 'formattedAddress', 'googleMapsURI', "photos", "rating", "regularOpeningHours"],
         includedType: '', // Restrict query to a specific type (leave blank for any).
         useStrictTypeFiltering: true,
         locationBias: new google.maps.LatLng(43.6532, -79.3832),
         isOpenNow: true,
         language: 'en-US',
-        maxResultCount: 8,
+        maxResultCount: 9,
         minRating: 1,
         region: 'ca',
     };

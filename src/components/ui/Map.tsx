@@ -1,5 +1,5 @@
 import {API} from "../api/api.js"
-import { APIProvider, Map, MapCameraChangedEvent, InfoWindow, useAdvancedMarkerRef, AdvancedMarker, useMap } from "@vis.gl/react-google-maps";
+import { APIProvider, Map, InfoWindow, useAdvancedMarkerRef, AdvancedMarker, useMap } from "@vis.gl/react-google-maps";
 import { useEffect, useState, Dispatch, SetStateAction } from "react";
 
 const test_data = [
@@ -129,6 +129,17 @@ const PlacesMarkers = (props: {placesLocs: any[]}) => {
     );
 };
 
+const MapCameraHandler = ({ targetCenter }: { targetCenter: google.maps.LatLngLiteral | null }) => {
+    const map = useMap();
+
+    useEffect(() => {
+        if (map && targetCenter) {
+            map.panTo(targetCenter);
+        }
+    }, [map, targetCenter]);
+
+    return null; 
+};
 
 export const GMap = (props: {location: string, cuisine: string, diet: string, updatePlacesData: Dispatch<SetStateAction<any[]>> }) => {
     const [places, setPlaces] = useState<google.maps.places.Place[]>([]);
@@ -137,25 +148,25 @@ export const GMap = (props: {location: string, cuisine: string, diet: string, up
     const MAP_CONFIG = {
         mapId: "VeganPlacesMap",
         defaultZoom: 13,
-        center: center,
+        defaultCenter: {lat: 43.6532, lng: -79.3832},
         gestureHandling: 'greedy' as const,
         disableDefaultUI: true,
         
     };
 
+    const apiKey = "YOUR_API_KEY";
 
     useEffect(() => {
         async function fetchData() {
             const result = await API(props.location, props.cuisine, props.diet); 
-            console.log(result); 
             setPlaces(result);
             props.updatePlacesData(result);
+            console.log("Called places api")
         }
 
         async function getMapCenter() {
-
             const response = await fetch(
-                `https://maps.googleapis.com/maps/api/geocode/json?address={${encodeURIComponent(props.location)}&components=country:CA&key=YOUR_API_KEY`,
+                `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(props.location)}&components=country:CA&key=`+apiKey,
                 {
                 method: 'GET',
             }
@@ -169,22 +180,18 @@ export const GMap = (props: {location: string, cuisine: string, diet: string, up
 
         getMapCenter();
         fetchData();
-        console.log(center);
     }, [props.location, props.cuisine, props.diet]);
 
     return (
     <>
-        <APIProvider apiKey="YOUR_API_KEY">
+        <APIProvider apiKey={apiKey}>
             <div className="h-full w-full">
-                <Map {...MAP_CONFIG} 
-                onCameraChanged={ (ev: MapCameraChangedEvent) => {setCenter(ev.detail.center)}
-                }>
+                <Map {...MAP_CONFIG} >
                     <PlacesMarkers placesLocs={places} />
+                    <MapCameraHandler targetCenter={center} />
                 </Map>
             </div>
         </APIProvider>
-
-
     </> 
     );
 };

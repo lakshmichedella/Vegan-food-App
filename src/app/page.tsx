@@ -3,11 +3,12 @@ import { useState } from "react";
 import RestaurantCard from "../components/ui/RestaurantCard";
 import Link from 'next/link';
 import {GMap} from "../components/ui/Map"
+import { useRouter } from 'next/navigation';
 
 const dummyData = [
-  { id: 1, name: "Fantastic Wok", status: "Closes in 2 hours", cuisine: "Chinese", rating: 3, imageUrl: "https://images.unsplash.com/photo-1555126634-323283e090fa?w=200" },
-  { id: 2, name: "India Gate", status: "Closes in 4 hours", cuisine: "Indian", rating: 4, imageUrl: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=200" },
-  { id: 3, name: "Sushi Island", status: "Closes in 1 hour", cuisine: "Japanese", rating: 4, imageUrl: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=200" },
+  { id: 1, displayName: "Fantastic Wok", regularOpeningHours: {weekdayDescriptions: "Closes in 2 hours"}, rating: 3, photos:[ {googleMapsURI: "https://images.unsplash.com/photo-1555126634-323283e090fa?w=200"}] },
+  { id: 2, displayName: "India Gate", regularOpeningHours: {weekdayDescriptions: "Closes in 4 hours"}, rating: 4, photos: [{googleMapsURI: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=200"}] },
+  { id: 3, displayName: "Sushi Island", regularOpeningHours: {weekdayDescriptions: "Closes in 1 hour"}, rating: 4, photos: [{googleMapsURI: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=200"}] },
 ];
 
 export default function Home() {
@@ -22,6 +23,7 @@ export default function Home() {
     {diet: "Halal", checked: false}
     ])
     const [placesData, setPlacesData] = useState(dummyData)
+    const router = useRouter();
 
     console.log("Place data", placesData)
 
@@ -70,12 +72,13 @@ export default function Home() {
               <div className="w-full">
                 <p className="text-right text-[10px] uppercase mb-4 tracking-widest text-gray-600">Here's what we found:</p>
                 <div className="space-y-4">
-                  {placesData.map((res) => (
-                    <RestaurantCard key={res.id} {...res} />
-                  ))}
+                  {placesData.slice(0,3).map(res => 
+                    <RestaurantCard key={res.id} name={res.displayName} status={res.regularOpeningHours.weekdayDescriptions} rating={res.rating} imageUrl={res.photos[0].googleMapsURI} />
+                  )}
                 </div>
                     <Link href="/all-results" className="w-full">
-                      <button className="mt-8 bg-[#E0E0E0] w-[80%] py-6 rounded-[30px] shadow-md hover:bg-gray-200 transition uppercase text-[10px] font-bold tracking-widest text-gray-600 mx-auto block">
+                      <button className="mt-8 bg-[#E0E0E0] w-[80%] py-6 rounded-[30px] shadow-md hover:bg-gray-200 transition uppercase text-[10px] font-bold tracking-widest text-gray-600 mx-auto block" 
+                      onClick={() => {sessionStorage.setItem('placeData', JSON.stringify(placesData)); router.push('/all-results');}}>
                         More Results
                       </button>
                     </Link>   
